@@ -10,13 +10,13 @@ Implementation and comparison of Value Iteration and Policy Iteration on the Gym
 
 ## Team
 
-| Name | ID | Section | Responsibility |
-|---|---|---|---|
-| Omar Ez-Eldin | 20220228 | Section 1 | OOP Implementation |
-| Yussuf Ahmed | 20220385 | Section 2 | Algorithm Details (VI & PI) |
-| Moaz Gehad | 20220340 | Sections 3 & 4 | Experiments & Conceptual Questions |
-| Mahmoud Ehab | 20220457 | Section 5 | Transition Model Learning |
-| Abdelrhman Ebrahim | 20220519 | Section 6 | MountainCar Extension |
+| Name               | ID       | Section        | Responsibility                     |
+| ------------------ | -------- | -------------- | ---------------------------------- |
+| Yussuf Ahmed       | 20220385 | Section 1      | OOP Implementation                 |
+| Omar Ez-Eldin      | 20220228 | Section 2      | Algorithm Details (VI & PI)        |
+| Moaz Gehad         | 20220340 | Sections 3 & 4 | Experiments & Conceptual Questions |
+| Mahmoud Ehab       | 20220457 | Section 5      | Transition Model Learning          |
+| Abdelrhman Ebrahim | 20220519 | Section 6      | MountainCar Extension              |
 
 ## Project Structure
 
@@ -65,23 +65,23 @@ jupyter notebook Assignment1_DP_RL.ipynb
 
 ## Constraints
 
-| Rule | Status |
-|---|---|
-| RL libraries (Stable-Baselines, RLlib, etc.) | Not permitted |
-| NumPy and pure Python | Required |
-| OOP design | Strictly required |
-| Written explanation for every plot | Required |
-| `plt.show()` outside `Visualiser` | Not permitted |
-| `gymnasium` (env instantiation + `env.P` only) | Permitted |
+| Rule                                           | Status            |
+| ---------------------------------------------- | ----------------- |
+| RL libraries (Stable-Baselines, RLlib, etc.)   | Not permitted     |
+| NumPy and pure Python                          | Required          |
+| OOP design                                     | Strictly required |
+| Written explanation for every plot             | Required          |
+| `plt.show()` outside `Visualiser`              | Not permitted     |
+| `gymnasium` (env instantiation + `env.P` only) | Permitted         |
 
 ## Timeline
 
-| Phase | Dates | Milestone |
-|---|---|---|
-| Foundation | Apr 13-15 | TaxiEnvironment + algorithm skeletons ready |
-| Core Implementation | Apr 15-17 | VI, PI, Visualiser, experiments complete |
-| Extensions | Apr 17-19 | Transition model + MountainCar done |
-| Final Integration | Apr 19-20 | Full notebook review, polish, submit |
+| Phase               | Dates     | Milestone                                   |
+| ------------------- | --------- | ------------------------------------------- |
+| Foundation          | Apr 13-15 | TaxiEnvironment + algorithm skeletons ready |
+| Core Implementation | Apr 15-17 | VI, PI, Visualiser, experiments complete    |
+| Extensions          | Apr 17-19 | Transition model + MountainCar done         |
+| Final Integration   | Apr 19-20 | Full notebook review, polish, submit        |
 
 **Deadline: April 20, 2026**
 
