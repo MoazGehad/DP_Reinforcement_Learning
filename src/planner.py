@@ -1,5 +1,5 @@
 """
-Planner — Orchestrator for running and comparing DP algorithms.
+Planner - Orchestrator for running and comparing DP algorithms.
 
 Acts as a high-level interface to run Value Iteration and Policy Iteration,
 and produce comparison results.

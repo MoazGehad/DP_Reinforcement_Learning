@@ -1,5 +1,5 @@
 """
-TaxiEnvironment — Wrapper for the Gymnasium Taxi-v3 environment.
+TaxiEnvironment - Wrapper for the Gymnasium Taxi-v3 environment.
 
 This class serves as the sole point of contact with the simulator.
 No planning logic should appear inside this class.
@@ -16,7 +16,7 @@ class TaxiEnvironment:
         env: The underlying Gymnasium environment instance.
         n_states (int): Total number of states (500).
         n_actions (int): Total number of actions (6).
-        P (dict): The transition model — P[s][a] returns a list of
+        P (dict): The transition model - P[s][a] returns a list of
                   (probability, next_state, reward, done) tuples.
     """
 

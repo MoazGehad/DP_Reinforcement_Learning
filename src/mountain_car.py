@@ -1,5 +1,5 @@
 """
-MountainCar — Discretisation and planning for MountainCarContinuous-v0.
+MountainCar - Discretisation and planning for MountainCarContinuous-v0.
 
 This module handles the continuous-to-discrete state mapping and
 reuses existing planning agents on the discretised problem.

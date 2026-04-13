@@ -1,5 +1,5 @@
 """
-ValueIterationAgent — Implements the Value Iteration algorithm.
+ValueIterationAgent - Implements the Value Iteration algorithm.
 
 Uses the Bellman optimality update, iterating until the maximum change
 across all states falls below the convergence threshold theta.
@@ -17,8 +17,8 @@ class ValueIterationAgent:
         theta (float): Convergence threshold.
 
     Attributes:
-        value_function (np.ndarray): Array of size 500 — state values.
-        policy (np.ndarray): Array of size 500 — optimal actions.
+        value_function (np.ndarray): Array of size 500.
+        policy (np.ndarray): Array of size 500.
         convergence_history (list): Max-delta values per iteration.
     """
 

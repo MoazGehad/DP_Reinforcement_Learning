@@ -1,5 +1,5 @@
 """
-Visualiser — Centralised plotting for all assignment visualisations.
+Visualiser - Centralised plotting for all assignment visualisations.
 
 All plotting logic MUST be in this class.
 No plt.show() calls are permitted outside this class.

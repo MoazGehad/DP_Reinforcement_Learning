@@ -1,5 +1,5 @@
 """
-TransitionModel — Learned approximation of the environment's transition dynamics.
+TransitionModel - Learned approximation of the environment's transition dynamics.
 
 Maintains a model that can be incrementally updated from (s, a, r, s') experience
 and exposes P[s][a] in the same format as Gymnasium for seamless integration.
@@ -12,7 +12,7 @@ class TransitionModel:
     """Learned transition model for the Taxi-v3 environment.
 
     Supports 500 states and 6 actions. Exposes P[s][a] returning a list
-    of (probability, next_state, reward, done) tuples — consistent with
+    of (probability, next_state, reward, done) tuples, consistent with
     the Gymnasium format.
 
     Attributes:

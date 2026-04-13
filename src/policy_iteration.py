@@ -1,5 +1,5 @@
 """
-PolicyIterationAgent — Implements the Policy Iteration algorithm.
+PolicyIterationAgent - Implements the Policy Iteration algorithm.
 
 Alternates between Policy Evaluation (Bellman expectation equation)
 and Policy Improvement (greedy update) until the policy stabilises.
@@ -17,8 +17,8 @@ class PolicyIterationAgent:
         theta (float): Convergence threshold for policy evaluation.
 
     Attributes:
-        value_function (np.ndarray): Array of size 500 — state values.
-        policy (np.ndarray): Array of size 500 — optimal actions.
+        value_function (np.ndarray): Array of size 500.
+        policy (np.ndarray): Array of size 500.
         n_policy_changes (int): Total number of policy updates across all iterations.
     """
 
