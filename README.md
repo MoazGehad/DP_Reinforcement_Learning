@@ -2,7 +2,7 @@
 
 **AI424 - Reinforcement Learning**
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/RL_Assignment/blob/main/Assignment1_DP_RL.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/MoazGehad/DP_Reinforcement_Learning/blob/main/Assignment1_DP_RL.ipynb)
 
 ## Overview
 
