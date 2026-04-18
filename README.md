@@ -15,8 +15,8 @@ Implementation and comparison of Value Iteration and Policy Iteration on the Gym
 | Yussuf Ahmed       | 20220385 | Section 1      | OOP Implementation                 |
 | Omar Ez-Eldin      | 20220228 | Section 2      | Algorithm Details (VI & PI)        |
 | Moaz Gehad         | 20220340 | Sections 3 & 4 | Experiments & Conceptual Questions |
-| Mahmoud Ehab       | 20220457 | Section 5      | Transition Model Learning          |
-| Abdelrhman Ebrahim | 20220519 | Section 6      | MountainCar Extension              |
+| Abdelrhman Ibrahim | 20220519 | Section 5      | Transition Model Learning          |
+| Mahmoud Ehab       | 20220457 | Section 6      | MountainCar Extension              |
 
 ## Project Structure
 
