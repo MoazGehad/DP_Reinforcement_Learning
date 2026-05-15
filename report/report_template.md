@@ -435,80 +435,83 @@ The reward is never explicitly computed — it's implicitly captured in the poli
 ## Part C: Comparison
 
 _Lead author: Mahmoud Ehab (20220457)_  
-_Co-author: Moaz Gehad (20220340)_
 
 ### C.1 — Direct comparison of the three algorithms
 
-| Criterion                     | PPO                         | RLHF                      | DPO                       |
-| ----------------------------- | --------------------------- | ------------------------- | ------------------------- |
-| **Category**                  | Policy-based (Actor-Critic) | Pipeline (SFT + RM + PPO) | Offline RL / Policy-based |
-| **Action Space**              | Discrete (token-level)      | Discrete (token-level)    | Response-level (implicit) |
-| **Needs Reward Model**        | Yes (provided externally)   | Yes (trained as Stage 2)  | No                        |
-| **Needs RL Loop**             | Yes                         | Yes (Stage 3)             | No                        |
-| **Training Stability**        | [TODO]                      | [TODO]                    | [TODO]                    |
-| **Data Requirements**         | [TODO]                      | [TODO]                    | [TODO]                    |
-| **Implementation Complexity** | [TODO]                      | [TODO]                    | [TODO]                    |
-| **Real-world Safety**         | [TODO]                      | [TODO]                    | [TODO]                    |
-| **Sample Efficiency**         | [TODO]                      | [TODO]                    | [TODO]                    |
-| **Computational Cost**        | [TODO]                      | [TODO]                    | [TODO]                    |
+| Criterion                     | PPO                         | RLHF                              | DPO                                    |
+| ----------------------------- | --------------------------- | --------------------------------- | -------------------------------------- |
+| **Category**                  | Policy-based (Actor-Critic) | Pipeline (SFT + RM + PPO)         | Offline RL / Policy-based              |
+| **Action Space**              | Discrete (token-level)      | Discrete (token-level)            | Response-level (implicit)              |
+| **Needs Reward Model**        | Yes (provided externally)   | Yes (trained as Stage 2)          | No                                     |
+| **Needs RL Loop**             | Yes                         | Yes (Stage 3)                     | No                                     |
+| **Training Stability**        | Moderate to Low             | Low                               | High                                   |
+| **Data Requirements**         | Moderate (online rollouts)  | High (SFT + preference + RM data) | High (preference pairs only)           |
+| **Implementation Complexity** | High                        | Very High                         | Low to Moderate                        |
+| **Real-world Safety**         | Moderate                    | High (best alignment control)     | High (but less controllable than RLHF) |
+| **Sample Efficiency**         | Low to Moderate             | Low                               | High                                   |
+| **Computational Cost**        | High                        | Very High                         | Low to Moderate                        |
 
-[TODO: Write 2-3 paragraphs synthesizing this table into a narrative comparison]
 
+PPO, RLHF, and DPO represent three progressively different approaches to aligning large language models with human preferences, differing mainly in how they obtain and use feedback signals. PPO is a classic reinforcement learning method that operates at the token level using an actor–critic setup, requiring a reward model and an online RL loop to optimize policy behavior. While flexible, it tends to be unstable and computationally expensive due to the need for rollouts and careful tuning of reward signals. RLHF extends this idea into a full pipeline: supervised fine-tuning is followed by reward model training and then PPO optimization. This makes RLHF the most structured and widely used alignment framework, but also the most complex and resource-intensive.
+
+DPO, in contrast, removes the need for both a reward model and an explicit RL loop by directly optimizing the policy using preference pairs in an offline manner. This simplification significantly improves training stability and reduces computational cost, while also improving sample efficiency since it avoids expensive environment interactions or rollouts. However, this comes with a trade-off: RLHF with PPO generally provides finer-grained control over optimization dynamics and can incorporate more complex reward shaping, which can be useful in high-stakes safety-critical applications.
+
+Overall, the three methods form a clear spectrum. PPO is the most fundamental but hardest to stabilize, RLHF is the most powerful but operationally heavy, and DPO is the most efficient and stable but slightly less flexible in control. The choice between them depends on the available compute budget, safety requirements, and how much control is needed over the alignment process.
 ---
 
 ### C.2 — Which algorithm is more suitable for discrete actions?
 
-[TODO: All three handle discrete actions (tokens), but PPO and RLHF explicitly work at the token level during training. Discuss.]
-
+For discrete action spaces, PPO and RLHF (which relies on PPO) are generally the most suitable because they directly optimize a stochastic policy over token-level discrete actions using sampled trajectories and advantage estimates. This allows fine-grained control at each step of generation. DPO also works well in discrete settings, but it optimizes at the response level using preference pairs rather than explicit step-by-step action optimization. As a result, PPO/RLHF are more naturally aligned with discrete sequential decision-making.
 ---
 
 ### C.3 — Which algorithm is more suitable for continuous actions?
 
-[TODO: None of these are primarily designed for continuous actions in the LLM context. However, discuss how PPO could theoretically handle continuous actions in other domains. Note that LLM alignment is inherently discrete.]
+For continuous action spaces, PPO is typically the most suitable because it directly supports continuous policies (e.g., Gaussian policy outputs) and provides stable gradient updates through clipping. RLHF (which is built on PPO) can also handle continuous actions in principle, but it is mainly used in discrete settings like language modeling, making it less common in continuous control domains. DPO is the least suitable, since it is designed for preference-based optimization over discrete outputs rather than precise continuous action control. Overall, PPO is the standard choice for continuous control tasks in reinforcement learning.
 
 ---
 
 ### C.4 — Which one is more stable during training?
 
-[TODO: DPO is generally most stable (simple supervised loss). PPO can be unstable. RLHF inherits PPO's instability. Justify with specific mechanisms.]
+In terms of training stability, DPO is generally the most stable because it avoids both reward modeling and online RL optimization, turning the problem into a direct supervised-style objective over preference pairs. This removes common sources of instability like reward hacking and high-variance policy gradients.
 
+PPO is moderately stable due to its clipped objective, but it can still suffer from variance issues, sensitivity to hyperparameters, and instability from reward signals. RLHF (PPO-based pipeline) is the least stable overall because it inherits PPO’s instability and adds extra failure points from reward model training and pipeline mismatch.
 ---
 
 ### C.5 — Which one needs more data?
 
-[TODO: RLHF needs the most data (demonstration data + comparison data + RL samples). DPO needs preference pairs only. PPO needs reward model outputs + generated samples. Rank and justify.]
+RLHF typically needs the most data because it requires multiple datasets: supervised fine-tuning data, preference comparison data, and additional samples to train a reward model. This multi-stage setup makes it data-intensive overall.
 
+PPO needs moderate data since it relies on environment interactions or generated rollouts, but it does not require preference datasets or a separate reward model training stage. DPO generally needs less data than RLHF and PPO because it learns directly from preference pairs in an offline setting, though it still requires a reasonably large and high-quality preference dataset to perform well.
 ---
 
 ### C.6 — Which one is easier to implement?
 
-[TODO: DPO is simplest (one loss function, standard fine-tuning). PPO is moderately complex. RLHF is most complex (3 stages, multiple models). Justify.]
+DPO is the easiest to implement because it removes the need for a reward model, policy rollouts, and an explicit RL training loop, reducing the whole process to a supervised learning objective on preference pairs.
 
+PPO is more complex since it requires designing a reward signal, running on-policy rollouts, and carefully tuning stability mechanisms like clipping and advantage estimation. RLHF is the hardest overall because it combines multiple stages—SFT, reward model training, and PPO optimization—making the full pipeline significantly more involved and operationally heavy.
 ---
 
 ### C.7 — Which one is safer for real-world deployment?
 
-[TODO: Consider reward hacking (PPO/RLHF risk), distribution shift (DPO risk), predictability, and constraint satisfaction. Which would you trust more in production?]
+RLHF is generally considered the safest for real-world deployment because it allows explicit control over behavior through a learned reward model that can encode human preferences, safety constraints, and red-teaming feedback. This makes it easier to steer the model away from undesirable outputs during training.
 
+DPO is also quite safe in practice since it directly learns from human preference data and is more stable, but it offers less explicit control over fine-grained reward shaping. PPO alone is typically less safe for deployment because it depends heavily on the quality of the reward signal and can be more prone to reward hacking or unintended behaviors if not carefully designed.
 ---
 
 ### C.8 — Which one would you choose and why?
 
-[TODO: Provide a well-reasoned team recommendation. Consider:
+If I had to choose one for most modern LLM alignment setups, I would pick DPO. It offers a strong balance of performance, stability, and simplicity by eliminating the need for a reward model and expensive online RL loops, which significantly reduces engineering complexity and training cost. At the same time, it still aligns models effectively using high-quality preference data, which is often the most reliable signal available.
+
+That said, the choice depends on constraints. If you need maximum control and are working in a safety-critical or highly regulated setting, RLHF (PPO-based) may still be preferable despite its complexity. PPO alone is more suited to research or environments where you have a well-defined reward function and can afford unstable training dynamics.
 
 - For a startup with limited resources → DPO (simpler, cheaper)
 - For a major lab with annotators → RLHF (proven at scale)
 - For research purposes → PPO (most flexible)
-  Make your choice and argue for it.]
-
----
-
 ---
 
 ## Part D: Evaluation
 
 _Lead author: Abdelrhman Ebrahim (20220519)_  
-_Co-author: Mahmoud Ehab (20220457)_
 
 ### D.1 — What metrics would you use to evaluate the algorithms?
 
@@ -554,7 +557,7 @@ _Co-author: Mahmoud Ehab (20220457)_
 | Omar Ez-Eldin      | PPO                | Medium          | [paste link here]                                                     |
 | Yussuf Ahmed       | RLHF               | Medium          | https://www.perplexity.ai/search/3ef3cb70-29ec-461a-9e13-86ae5554bc53 |
 | Moaz Gehad         | DPO                | Advanced        | [paste link here]                                                     |
-| Mahmoud Ehab       | DPO                | Advanced        | [paste link here]                                                     |
+| Mahmoud Ehab       | DPO                | Advanced        |https://chatgpt.com/share/6a0741ce-89a0-83ea-8322-679faf873678         |
 | Abdelrhman Ebrahim | DPO                | Advanced        | [paste link here]                                                     |
 
 ---
