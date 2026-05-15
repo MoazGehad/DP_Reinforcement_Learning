@@ -520,38 +520,239 @@ That said, the choice depends on constraints. If you need maximum control and ar
 
 _Lead author: Abdelrhman Ebrahim (20220519)_  
 
-### D.1 — What metrics would you use to evaluate the algorithms?
+## D.1 — Metrics for Evaluating Alignment Algorithms
 
-[TODO: List and explain metrics such as:
+A good evaluation framework should measure not only whether the aligned model produces preferred responses, but also whether it remains useful, safe, and efficient. Common metrics include:
 
-- **Win rate**: How often is the aligned model's response preferred over the base model
-- **Reward model score**: Average score from the reward model
-- **KL divergence**: How far the aligned model has drifted from the reference
-- **Perplexity**: Has the model's language ability degraded?
-- **Safety benchmarks**: TruthfulQA, HHH evaluation, toxicity scores
-- **Human evaluation**: Helpfulness, harmlessness, honesty ratings
-- **MT-Bench / Chatbot Arena**: Standard LLM alignment benchmarks
-- **Training cost**: GPU hours, wall-clock time, dollar cost]
+### 1. Win Rate
 
-### D.2 — Would you use online RL, offline RL, or simulation?
+The **win rate** measures how often the aligned model’s outputs are preferred over a baseline model (usually the original pretrained or SFT model).
 
-[TODO: Discuss:
+For example, human evaluators may compare two responses side by side and choose which is better. If the aligned model wins 70% of comparisons, its win rate is 70%.
 
-- PPO uses online RL (generates new responses during training)
-- RLHF uses online RL (Stage 3)
-- DPO uses offline RL (fixed preference dataset)
-- Simulation in this context means using a reward model as a proxy for human judgment
-- Which approach is more practical? More effective?]
+This metric directly reflects alignment quality from a user perspective.
 
-### D.3 — Why not use only supervised learning?
+---
 
-[TODO: Explain why SFT alone is insufficient:
+### 2. Reward Model Score
 
-- SFT teaches the model to imitate demonstrations, but can't capture nuanced preferences
-- No demonstration data shows the full spectrum of "what NOT to do"
-- Preferences are comparative (A > B), which SFT can't directly optimize
-- SFT suffers from exposure bias and distribution mismatch
-- RL/preference optimization can discover novel good behaviors beyond what demonstrations show]
+The **reward model score** is the average score assigned by the learned reward model to generated responses.
+
+Higher reward scores indicate that the policy is producing outputs that better match human preferences according to the reward model.
+
+However, this metric alone can be misleading because the model may exploit weaknesses in the reward model (“reward hacking”).
+
+---
+
+### 3. KL Divergence
+
+**KL divergence** measures how far the aligned policy has drifted from the original reference model.
+
+In PPO-based RLHF, the objective often includes a KL penalty:
+
+\mathrm{KL}(\pi_{\theta} | \pi_{\mathrm{ref}})
+
+A low KL divergence keeps the model close to the pretrained distribution, preserving fluency and general knowledge while still improving alignment.
+
+If KL divergence becomes too large, the model may become unstable or overly optimized for reward.
+
+---
+
+### 4. Perplexity
+
+**Perplexity** measures language modeling quality.
+
+Lower perplexity generally means the model predicts natural language more effectively. Monitoring perplexity helps ensure that alignment training does not degrade the model’s core linguistic abilities.
+
+A model with excellent reward scores but very poor perplexity may become unnatural or repetitive.
+
+---
+
+### 5. Safety Benchmarks
+
+Alignment should improve safety and reliability. Common benchmarks include:
+
+* TruthfulQA for truthfulness
+* HHH evaluations (helpful, honest, harmless behavior)
+* Toxicity scores
+* Jailbreak robustness tests
+* Bias and fairness benchmarks
+
+These tests evaluate whether the model avoids harmful, deceptive, or unsafe outputs.
+
+---
+
+### 6. Human Evaluation
+
+Human raters can directly evaluate outputs on dimensions such as:
+
+* Helpfulness
+* Harmlessness
+* Honesty
+* Coherence
+* Instruction-following quality
+
+Human evaluation remains one of the most important alignment metrics because automated metrics often fail to capture nuanced preferences.
+
+---
+
+### 7. Standard LLM Benchmarks
+
+Widely used alignment benchmarks include:
+
+* MT-Bench
+* Chatbot Arena
+
+These benchmarks compare models across many real-world conversational tasks and provide standardized evaluations.
+
+---
+
+### 8. Training Cost
+
+Practical evaluation should also include efficiency metrics:
+
+* GPU hours
+* Wall-clock training time
+* Memory usage
+* Dollar cost
+
+Methods like DPO are often attractive because they achieve competitive alignment performance with significantly lower computational cost than PPO-based RLHF.
+
+---
+
+## D.2 — Online RL vs Offline RL vs Simulation
+
+### Online RL
+
+**Online RL** generates new responses during training and updates the model continuously based on reward feedback.
+
+Examples:
+
+* PPO
+* Stage 3 of RLHF
+
+The model actively explores new behaviors, receives rewards, and improves iteratively.
+
+Advantages:
+
+* Can discover novel high-quality behaviors
+* Adapts dynamically during training
+* Often achieves strong alignment performance
+
+Disadvantages:
+
+* Computationally expensive
+* Requires large-scale generation during training
+* Can become unstable
+* Sensitive to reward hacking
+
+---
+
+### Offline RL
+
+**Offline RL** trains using a fixed dataset without generating new trajectories during optimization.
+
+Example:
+
+* DPO (Direct Preference Optimization)
+
+DPO learns directly from preference pairs:
+
+* Preferred response
+* Rejected response
+
+Advantages:
+
+* Much simpler training pipeline
+* More stable optimization
+* Lower computational cost
+* Easier reproducibility
+
+Disadvantages:
+
+* Limited to behaviors represented in the dataset
+* Cannot explore new strategies during training
+
+---
+
+### Simulation
+
+In RLHF systems, “simulation” usually means replacing direct human feedback with a learned **reward model** that simulates human judgment.
+
+Instead of asking humans to score every response, the reward model predicts what humans would prefer.
+
+This approach is necessary because large-scale human evaluation is too expensive to perform continuously during RL training.
+
+---
+
+### Which Approach Is More Practical?
+
+For modern alignment systems:
+
+* **DPO/offline methods** are generally more practical because they are cheaper, simpler, and more stable.
+* **Online RL methods** can achieve stronger optimization but require much more engineering and compute.
+
+As a result, many recent systems favor offline preference optimization unless the additional benefits of online exploration justify the cost.
+
+---
+
+## D.3 — Why Not Use Only Supervised Learning?
+
+Supervised fine-tuning (SFT) is important, but it is not sufficient for robust alignment.
+
+### 1. SFT Only Imitates Demonstrations
+
+SFT trains the model to imitate examples written by humans.
+
+However, alignment often depends on subtle preferences rather than exact demonstrations. Human values are difficult to represent fully through labeled examples alone.
+
+---
+
+### 2. Demonstrations Do Not Capture Everything to Avoid
+
+Training data usually contains examples of good behavior, but far fewer examples of undesirable behavior.
+
+As a result, SFT does not strongly teach:
+
+* what *not* to say,
+* how to balance competing objectives,
+* or how to handle ambiguous situations safely.
+
+Preference learning provides richer signals about undesirable outputs.
+
+---
+
+### 3. Preferences Are Comparative
+
+Human judgment is often comparative rather than absolute.
+
+People can reliably say:
+
+* “Response A is better than Response B”
+
+even when they cannot easily write the perfect response themselves.
+
+SFT cannot directly optimize comparative preferences, whereas RLHF and DPO are explicitly designed for this setting.
+
+---
+
+### 4. Exposure Bias and Distribution Shift
+
+During SFT, the model learns from human-written trajectories.
+
+At inference time, however, the model generates its own outputs step-by-step. Errors can compound because the model encounters states that were not present in training data.
+
+RL-style optimization trains the model under its own generated distribution, reducing this mismatch.
+
+---
+
+### 5. RL Can Discover Novel Good Behaviors
+
+SFT is limited to imitating existing demonstrations.
+
+RL and preference optimization can discover new strategies that humans did not explicitly provide, as long as those strategies receive high reward or strong preference scores.
+
+This allows aligned models to generalize beyond the original demonstration dataset.
 
 ---
 
@@ -565,7 +766,7 @@ _Lead author: Abdelrhman Ebrahim (20220519)_
 | Yussuf Ahmed       | RLHF               | Medium          | https://www.perplexity.ai/search/3ef3cb70-29ec-461a-9e13-86ae5554bc53 |
 | Moaz Gehad         | DPO                | Advanced        | [paste link here]                                                     |
 | Mahmoud Ehab       | DPO                | Advanced        |https://chatgpt.com/share/6a0741ce-89a0-83ea-8322-679faf873678         |
-| Abdelrhman Ebrahim | DPO                | Advanced        | [paste link here]                                                     |
+| Abdelrhman Ebrahim | DPO                | Advanced        | https://gemini.google.com/share/01ad1439b194                                                     |
 
 ---
 
