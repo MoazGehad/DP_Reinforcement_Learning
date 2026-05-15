@@ -222,9 +222,11 @@ RLHF is a full pipeline (not a single algorithm) that uses human preferences to 
 2. **Reward Model Training**: Train a reward model on human preference comparisons (response A vs. response B)
 3. **RL Fine-Tuning**: Use PPO (or another RL algorithm) to optimize the LLM against the learned reward model
 
-RLHF is the standard approach used by OpenAI (InstructGPT, ChatGPT), Anthropic (Claude), and Google (Gemini) for aligning their models.
+In LLM alignment, RLHF is a three‑stage pipeline that uses human feedback to push a pre‑trained language model toward responses that are more helpful, honest, and harmless. In Stage 1 (SFT), the base LLM is fine‑tuned on high‑quality human‑written demonstrations, so it learns a baseline “good behavior” and becomes the SFT model that will later serve as both the starting policy and the reference policy.
 
-[TODO: Expand on each stage and their interactions.]
+In Stage 2 (Reward Model Training), humans compare pairs of responses to the same prompt and choose which they prefer; a separate reward model is trained on these pairwise labels (e.g., with a Bradley–Terry objective) to output a scalar score that predicts human preference for any (prompt, response) pair. This reward model acts as a proxy for human judgment and is frozen once it reaches good accuracy.
+
+In Stage 3 (PPO Fine‑Tuning), the SFT model is further trained with PPO using the reward model as the source of feedback. For each prompt, the current policy generates a response, the reward model assigns it a scalar score plus an implicit KL penalty relative to the frozen reference model, and PPO uses these rewards to adjust the token‑level policy toward responses that the reward model (and therefore humans) prefer, while keeping the policy close to the SFT
 
 #### B2.2 — What is the state?
 
