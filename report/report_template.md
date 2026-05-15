@@ -457,11 +457,13 @@ PPO, RLHF, and DPO represent three progressively different approaches to alignin
 DPO, in contrast, removes the need for both a reward model and an explicit RL loop by directly optimizing the policy using preference pairs in an offline manner. This simplification significantly improves training stability and reduces computational cost, while also improving sample efficiency since it avoids expensive environment interactions or rollouts. However, this comes with a trade-off: RLHF with PPO generally provides finer-grained control over optimization dynamics and can incorporate more complex reward shaping, which can be useful in high-stakes safety-critical applications.
 
 Overall, the three methods form a clear spectrum. PPO is the most fundamental but hardest to stabilize, RLHF is the most powerful but operationally heavy, and DPO is the most efficient and stable but slightly less flexible in control. The choice between them depends on the available compute budget, safety requirements, and how much control is needed over the alignment process.
+
 ---
 
 ### C.2 — Which algorithm is more suitable for discrete actions?
 
 For discrete action spaces, PPO and RLHF (which relies on PPO) are generally the most suitable because they directly optimize a stochastic policy over token-level discrete actions using sampled trajectories and advantage estimates. This allows fine-grained control at each step of generation. DPO also works well in discrete settings, but it optimizes at the response level using preference pairs rather than explicit step-by-step action optimization. As a result, PPO/RLHF are more naturally aligned with discrete sequential decision-making.
+
 ---
 
 ### C.3 — Which algorithm is more suitable for continuous actions?
@@ -475,6 +477,7 @@ For continuous action spaces, PPO is typically the most suitable because it dire
 In terms of training stability, DPO is generally the most stable because it avoids both reward modeling and online RL optimization, turning the problem into a direct supervised-style objective over preference pairs. This removes common sources of instability like reward hacking and high-variance policy gradients.
 
 PPO is moderately stable due to its clipped objective, but it can still suffer from variance issues, sensitivity to hyperparameters, and instability from reward signals. RLHF (PPO-based pipeline) is the least stable overall because it inherits PPO’s instability and adds extra failure points from reward model training and pipeline mismatch.
+
 ---
 
 ### C.5 — Which one needs more data?
@@ -482,6 +485,7 @@ PPO is moderately stable due to its clipped objective, but it can still suffer f
 RLHF typically needs the most data because it requires multiple datasets: supervised fine-tuning data, preference comparison data, and additional samples to train a reward model. This multi-stage setup makes it data-intensive overall.
 
 PPO needs moderate data since it relies on environment interactions or generated rollouts, but it does not require preference datasets or a separate reward model training stage. DPO generally needs less data than RLHF and PPO because it learns directly from preference pairs in an offline setting, though it still requires a reasonably large and high-quality preference dataset to perform well.
+
 ---
 
 ### C.6 — Which one is easier to implement?
@@ -489,6 +493,7 @@ PPO needs moderate data since it relies on environment interactions or generated
 DPO is the easiest to implement because it removes the need for a reward model, policy rollouts, and an explicit RL training loop, reducing the whole process to a supervised learning objective on preference pairs.
 
 PPO is more complex since it requires designing a reward signal, running on-policy rollouts, and carefully tuning stability mechanisms like clipping and advantage estimation. RLHF is the hardest overall because it combines multiple stages—SFT, reward model training, and PPO optimization—making the full pipeline significantly more involved and operationally heavy.
+
 ---
 
 ### C.7 — Which one is safer for real-world deployment?
@@ -496,6 +501,7 @@ PPO is more complex since it requires designing a reward signal, running on-poli
 RLHF is generally considered the safest for real-world deployment because it allows explicit control over behavior through a learned reward model that can encode human preferences, safety constraints, and red-teaming feedback. This makes it easier to steer the model away from undesirable outputs during training.
 
 DPO is also quite safe in practice since it directly learns from human preference data and is more stable, but it offers less explicit control over fine-grained reward shaping. PPO alone is typically less safe for deployment because it depends heavily on the quality of the reward signal and can be more prone to reward hacking or unintended behaviors if not carefully designed.
+
 ---
 
 ### C.8 — Which one would you choose and why?
@@ -507,6 +513,7 @@ That said, the choice depends on constraints. If you need maximum control and ar
 - For a startup with limited resources → DPO (simpler, cheaper)
 - For a major lab with annotators → RLHF (proven at scale)
 - For research purposes → PPO (most flexible)
+
 ---
 
 ## Part D: Evaluation
