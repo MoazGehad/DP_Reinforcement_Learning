@@ -167,7 +167,7 @@ In LLM alignment, rewards are subjective because human preferences apply to the 
 
 2. **The Critic (The Predictor)** is a separate model (usually it is the exact copy of the LLM) its job is to calculate the Advantage ($A$) for every single token action.
 
-***$$A = \text{Actual Reward} - \text{Critic's Predicted Reward}$$***
+**$$A = \text{Actual Reward} - \text{Critic's Predicted Reward}$$**
 
 if we have a positive advantage PPO updates the weights to increase their liklihood and vice versa.
 
@@ -804,7 +804,7 @@ This allows aligned models to generalize beyond the original demonstration datas
 
 | Student Name       | Selected Algorithm | Algorithm Level | AI Chat Link(s)                                                       |
 | ------------------ | ------------------ | --------------- | --------------------------------------------------------------------- |
-| Omar Ez-Eldin      | PPO                | Medium          | [paste link here]                                                     |
+| Omar Ez-Eldin      | PPO                | Medium          | https://gemini.google.com/share/5f03e1d67e07                          |
 | Yussuf Ahmed       | RLHF               | Medium          | https://www.perplexity.ai/search/3ef3cb70-29ec-461a-9e13-86ae5554bc53 |
 | Moaz Gehad         | DPO                | Advanced        | [paste link here]                                                     |
 | Mahmoud Ehab       | DPO                | Advanced        |https://chatgpt.com/share/6a0741ce-89a0-83ea-8322-679faf873678         |
