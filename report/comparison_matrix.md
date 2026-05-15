@@ -34,7 +34,7 @@
 
 ## C.1 — Direct Comparison (Narrative)
 
-### Paragraph 1 — Philosophical Differences
+### Philosophical Differences
 
 PPO, RLHF, and DPO represent three distinct paradigms for aligning large language models with human preferences. PPO is a general-purpose reinforcement learning algorithm that optimizes a policy using reward signals without assuming anything about language structure. It acts as the underlying optimization engine that updates token-level probabilities using advantage estimates and clipped policy gradients.
 
@@ -42,13 +42,13 @@ RLHF extends PPO into a full alignment pipeline. It introduces a reward model tr
 
 DPO takes a fundamentally different approach by eliminating both the reward model and the reinforcement learning loop. It reformulates the RLHF objective into a direct optimization problem over preference pairs, effectively turning alignment into a supervised learning task over relative preferences.
 
-### Paragraph 2 — Practical Implications
+### Practical Implications
 
 In practice, these differences strongly affect complexity, cost, and stability. PPO is flexible but difficult to stabilize due to high variance in policy gradients and sensitivity to reward scaling. RLHF improves expressiveness and control but introduces multiple failure points, including reward model bias and pipeline mismatch between training stages.
 
 DPO significantly simplifies training by removing online sampling and reward modeling, making it far cheaper and more stable. However, it sacrifices some flexibility in reward shaping and fine-grained control compared to RLHF.
 
-### Paragraph 3 — Trade-off Summary
+### Trade-off Summary
 
 Overall, the three methods form a clear spectrum. PPO provides the most general optimization framework, RLHF offers the strongest controllability through explicit reward modeling, and DPO provides the most efficient and stable training procedure. The choice depends on whether the priority is flexibility (PPO), control (RLHF), or simplicity and efficiency (DPO).
 
