@@ -810,7 +810,7 @@ This allows aligned models to generalize beyond the original demonstration datas
 | ------------------ | ------------------ | --------------- | --------------------------------------------------------------------- |
 | Omar Ez-Eldin      | PPO                | Medium          | https://gemini.google.com/share/5f03e1d67e07                          |
 | Yussuf Ahmed       | RLHF               | Medium          | https://www.perplexity.ai/search/3ef3cb70-29ec-461a-9e13-86ae5554bc53 |
-| Moaz Gehad         | DPO                | Advanced        | [paste link here]                                                     |
+| Moaz Gehad         | DPO                | Advanced        | https://gemini.google.com/share/11aa55cd1ef6                                                   |
 | Mahmoud Ehab       | DPO                | Advanced        |https://chatgpt.com/share/6a0741ce-89a0-83ea-8322-679faf873678         |
 | Abdelrhman Ebrahim | DPO                | Advanced        | https://gemini.google.com/share/01ad1439b194                                                     |
 
