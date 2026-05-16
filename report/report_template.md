@@ -393,7 +393,7 @@ DPO is an advanced alternative to RLHF that eliminates the need for a separate r
 
 The key insight is that DPO shows that the optimal policy under the RLHF objective has a closed-form solution that depends only on the preference data and a reference policy. This means you can skip reward model training and PPO entirely, and instead optimize a simple binary cross-entropy loss on preference pairs.
 
-DPO loss: L*DPO(π*θ; π*ref) = -E[(y_w, y_l) ~ D] [log σ(β · (log π*θ(y*w|x)/π_ref(y_w|x) - log π*θ(y_l|x)/π_ref(y_l|x)))]
+$$DPO loss: L*DPO(π*θ; π*ref) = -E[(y_w, y_l) ~ D] [log σ(β · (log π*θ(y*w|x)/π_ref(y_w|x) - log π*θ(y_l|x)/π_ref(y_l|x)))]$$
 
 Where:
 - y_w is the preferred response
@@ -420,7 +420,7 @@ In DPO, the reward is implicit. There is no standalone reward model providing an
 
 Instead, the reward is intrinsically captured by the policy itself through the following formulation:
 
-r(x, y) = β · log(π_θ(y|x) / π_ref(y|x)) + β · log Z(x)
+$$r(x, y) = β · log(π_θ(y|x) / π_ref(y|x)) + β · log Z(x)$$
 
 By optimizing the language model directly on preference pairs, the difference in log probabilities between the trained model ($\pi_\theta$) and the reference model ($\pi_{ref}$) naturally acts as the reward signal. 
 
