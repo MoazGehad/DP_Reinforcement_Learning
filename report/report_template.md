@@ -31,8 +31,6 @@ LLM Alignment is the challenge of ensuring that a large language model (such as 
 
 The alignment problem is central to deploying LLMs in production: chatbots, code assistants, medical Q&A, and educational tools all require the model to behave according to what humans actually prefer, not just what minimizes a language modeling loss.
 
-[TODO: Expand with your own understanding. Mention specific examples of misalignment you've encountered or read about.]
-
 ---
 
 ### A.2 — Why is Reinforcement Learning suitable for this problem?
@@ -49,8 +47,6 @@ RL is suitable for LLM alignment because:
 
 5. **Credit assignment**: When a response is rated as poor, RL can help identify which parts (tokens) contributed to the poor rating.
 
-[TODO: Add your own reasoning. Why can't we just use supervised fine-tuning alone?]
-
 ---
 
 ### A.3 — Who or what is the agent?
@@ -59,22 +55,19 @@ The **agent** is the Large Language Model (LLM) itself — specifically, its pol
 
 More precisely, the agent is the language model's policy π_θ, parameterized by weights θ, which maps a sequence of tokens (the current state) to a probability distribution over the next token (the action).
 
-[TODO: Customize further.]
-
 ---
 
 ### A.4 — What is the environment?
 
 The **environment** consists of:
 
-- **The user prompt / instruction**: The starting input that triggers a response
-- **The reward model** (in RLHF) or **preference data** (in DPO): Provides feedback on the quality of generated responses
-- **The tokenizer and vocabulary**: Defines the action space
-- **The conversation context**: The growing sequence of tokens that forms the current state
-
+- **The State Space ($S$)** consists of all valid sequences of tokens that can fit within the model's context window.
+- **The Action Space ($A$)** which is the model's vocabulary any word the model was trained on can be an action (next sequence).
+- **The reward model** (in RLHF) or **preference data** (in DPO): Provides feedback on the quality of generated responses.
+- **The Transition Space** transitions are deterministic and highly predictable as the next state depends only on the chosen token and the current state.
+- ** The Terminal States** The End of Text Token (<|endoftext|>) or Reaching the Max Context Horizon.
+  
 The environment is fundamentally a text-generation setting where the agent's actions (token selections) modify the environment state (the growing response), and a reward signal is provided after the complete response is generated.
-
-[TODO: Discuss whether the environment is deterministic or stochastic.]
 
 ---
 
@@ -87,9 +80,7 @@ The task is **episodic**. Each episode consists of:
 3. **End**: The agent outputs an end-of-sequence token (or reaches a maximum length)
 4. **Reward**: A reward is assigned to the complete response (by the reward model or through preference comparison)
 
-Each prompt-response pair is an independent episode. There is no carry-over of state between different prompts.
-
-[TODO: Discuss nuances — e.g., multi-turn conversations could be seen as longer episodes.]
+Each prompt-response pair is an independent episode. There is no carry-over of state between different prompts unless if the context window can include previous prompts or responses.
 
 ---
 
@@ -110,11 +101,9 @@ Each prompt-response pair is an independent episode. There is no carry-over of s
 **Reward (r):**
 
 - Typically assigned at the **end of the episode** (after the full response is generated)
-- In RLHF: R(response) = reward_model(prompt, response) — a scalar score from a learned reward model
+- In RLHF: R(response) = reward_model(prompt, response).  a scalar score from a learned reward model
 - In DPO: Implicit reward derived from preference pairs (preferred response vs. rejected response)
-- Optional: KL-divergence penalty to prevent the aligned model from drifting too far from the base model: r*total = R(response) - β · KL(π*θ || π_ref)
-
-[TODO: Discuss reward shaping — should you give intermediate rewards per token?]
+- In PPO: KL-divergence penalty to prevent the aligned model from drifting too far from the base model: r*total = R(response) - β · KL(π*θ || π_ref)
 
 ---
 
